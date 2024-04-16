@@ -41,7 +41,7 @@ class Post(models.Model):
 class Tag(models.Model):
     post=models.ManyToManyField(Post)
     tag=models.CharField(max_length=250)
-    def __str__(self) -> str:
-        return self.tag
+    def __str__(self):
+        return str(self.tag)
     
     

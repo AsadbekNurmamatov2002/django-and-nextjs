@@ -13,7 +13,7 @@ class PostSerializers(serializers.ModelSerializer):
     author=UserSerailizers(many=False, read_only=True)
     class Meta:
         model=Post
-        fields=['title', 'category', 'body', 'author', 'publish', 'created', 'updated', 'status']
+        fields=["id", 'title', 'category', 'body', 'author', 'publish', 'created', 'updated', 'status']
         depth = 1
         
     def validate(self, data):
@@ -51,13 +51,23 @@ class CategorySerializers(serializers.ModelSerializer):
 class TagSerializers(serializers.ModelSerializer):
     class Meta:
         model=Tag
-        fields='__all__'
+        fields= ["id",'tag', 'post']
         depth=2
-    def save(self, **kwargs):
-        if self.instance:
-            self.instance.name=self.validated_data['name']
-            self.instance.save()
-        else:
-            self.instance=Tag.objects.update(**self.validated_data)
-        return self.instance
-        
+    # def save(self, **kwargs):
+        # if self.instance:
+        #     self.instance.tag=self.validated_data['tag']
+        #     self.instance.save()
+        # else:
+        #     self.instance=Tag.objects.update(**self.validated_data)
+        # return self.instance
+    def create(self, validated_data):
+        # datas = validated_data.pop('post')
+        tag = Tag.objects.create(**validated_data)
+        # for data in datas:
+            # Post.objects.create(tag=tag, **data)
+        return tag
+    
+    def update(self, instance, validated_data):
+        instance.tag = validated_data.get('tag', instance.tag)
+        instance.save()
+        return instance
