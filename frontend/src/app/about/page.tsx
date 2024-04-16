@@ -1,7 +1,9 @@
 
 function PageAbout() {
   return (
-    <div>PageAbout</div>
+    <div className=" container flex justify-around">
+      
+    </div>
   )
 }
 

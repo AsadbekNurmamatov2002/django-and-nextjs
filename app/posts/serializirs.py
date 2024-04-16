@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Category
+from .models import Post, Category, Tag
 from django.contrib.auth.models import User
 
 
@@ -8,8 +8,6 @@ class UserSerailizers(serializers.ModelSerializer):
         model=User
         fields="__all__"
         
-
-
 
 class PostSerializers(serializers.ModelSerializer):
     author=UserSerailizers(many=False, read_only=True)
@@ -49,4 +47,17 @@ class CategorySerializers(serializers.ModelSerializer):
         model=Category
         fields=['name', 'post']
         depth = 1
+
+class TagSerializers(serializers.ModelSerializer):
+    class Meta:
+        model=Tag
+        fields='__all__'
+        depth=2
+    def save(self, **kwargs):
+        if self.instance:
+            self.instance.name=self.validated_data['name']
+            self.instance.save()
+        else:
+            self.instance=Tag.objects.update(**self.validated_data)
+        return self.instance
         
